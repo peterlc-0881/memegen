@@ -4,6 +4,7 @@ from django.shortcuts import render
 from .forms import SearchForm
 
 import flickrapi
+import urllib.parse
 
 api_key = u'15b099664d1b449d2b840930dc0797c4'
 api_secret = u'4eb2308d474ccfd6'
@@ -38,8 +39,9 @@ def search_photos(request):
                     img_url = img_url + img['originalsecret'] + img_ext
                 else:
                     img_url = img_url + img['secret'] + img_ext
-                    
-                context['images'].append({'url': img_url, 'id': img['id'], 'title': img['title']})
+                
+                encoded_url = urllib.parse.quote(img_url, safe='')
+                context['images'].append({'url': img_url, 'encoded': encoded_url, 'id': img['id'], 'title': img['title']})
 
             return render(request, 'memegen/display-search.html', context) 
         else:
@@ -50,5 +52,6 @@ def search_photos(request):
         # @TODO: error handling
         return HttpResponse("Something is wrong!")
 
-def edit_photo(request, photo_id):
-    return HttpResponse("The photo id is " + photo_id)
+def edit_photo(request, photo_url):
+    decoded_url = urllib.parse.unquote(photo_url)
+    return render(request, 'memegen/edit-photo.html', {'img_url': decoded_url})

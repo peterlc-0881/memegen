@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    {% load static %}
+    <script src="{% static 'memegen/js/edit_photo.js' %}"></script>
+</head>
+
+<html lang='en'>
+
+<body>
+    <form id="edit-img-form" onsubmit="return false">
+        <input id="form_caption" class="text" name="caption" placeholder="Write something here!" maxlength="140" />
+        <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()"/>
+    </form>
+    <br />
+    <img src="{{ img_url }}" crossorigin="anonymous" id="src-img">
+
+    <canvas id="img-canvas" height="1000" width="1000">
+        <!--Error Message-->
+        <p>Canvas not supported :(</p>
+    </canvas>
+</body>
+
+</html>
