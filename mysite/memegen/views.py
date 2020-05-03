@@ -27,7 +27,7 @@ def search_photos(request):
             search_query = form.cleaned_data['search_query']
             ret = flickr.photos.search(text=search_query, media='photos', sort='relevance', per_page='10', extras='original_format')
             # @TODO: error handling
-            context = dict(img_urls=[])
+            context = dict(images=[])
 
             for img in ret['photos']['photo']:
 
@@ -39,7 +39,7 @@ def search_photos(request):
                 else:
                     img_url = img_url + img['secret'] + img_ext
                     
-                context['img_urls'].append(img_url)
+                context['images'].append({'url': img_url, 'id': img['id'], 'title': img['title']})
 
             return render(request, 'memegen/display-search.html', context) 
         else:
@@ -48,4 +48,7 @@ def search_photos(request):
 
     else:
         # @TODO: error handling
-        return HttpResponse("Something is wrong!")	
+        return HttpResponse("Something is wrong!")
+
+def edit_photo(request, photo_id):
+    return HttpResponse("The photo id is " + photo_id)
