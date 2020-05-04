@@ -17,9 +17,10 @@
         <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()"/>
     </form>
     <br />
-    <img src="{{ img_url }}" crossorigin="anonymous" id="src-img">
+    <!--To be referenced by canvas-->
+    <img src="{{ img_url }}" crossorigin="anonymous" id="src-img" hidden>
 
-    <canvas id="img-canvas" height="1000" width="1000" hidden>
+    <canvas id="img-canvas" height="1000" width="1000">
         <!--Error Message-->
         <p>Canvas not supported :(</p>
     </canvas>
