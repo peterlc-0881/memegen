@@ -26,8 +26,13 @@ def search_photos(request):
         
         if form.is_valid():
             search_query = form.cleaned_data['search_query']
+
+            # @TODO: handle users wanting to view several pages of photos
+
             ret = flickr.photos.search(text=search_query, media='photos', sort='relevance', per_page='10', extras='original_format')
+
             # @TODO: error handling
+
             context = dict(images=[])
 
             for img in ret['photos']['photo']:
@@ -40,16 +45,22 @@ def search_photos(request):
                 else:
                     img_url = img_url + img['secret'] + img_ext
                 
-                encoded_url = urllib.parse.quote(img_url, safe='')
+                # @TODO: look into more secure ways of passing in url?
+
+                encoded_url = urllib.parse.quote(img_url, safe='') # must encode to remove / and : => django misinterprets those chars
                 context['images'].append({'url': img_url, 'encoded': encoded_url, 'id': img['id'], 'title': img['title']})
 
             return render(request, 'memegen/display-search.html', context) 
         else:
+
             # @TODO: error handling
+
             return HttpResponse("Something is wrong!")
 
     else:
+
         # @TODO: error handling
+
         return HttpResponse("Something is wrong!")
 
 def edit_photo(request, photo_url):

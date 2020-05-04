@@ -14,7 +14,6 @@
 <body>
     <form id="edit-img-form" onsubmit="return false">
         <input id="form_caption" class="text" name="caption" placeholder="Write something here!" maxlength="140" />
-        <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()" />
         <div><br /></div>
         <div>
             <label for="font_color">Font Color:</label>
@@ -28,6 +27,11 @@
             <input id="xcoord" type="number" name="x" min="0" max="1000" step="1" value="100" />
             <label for="ycoord">y:</label>
             <input id="ycoord" type="number" name="y" min="0" max="1000" step="1" value="100" />
+        </div>
+        <div><br /></div>
+        <div>
+            <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()" />
+            <input id="download_image" type="submit" value="Download" class="btn btn-primary" onclick="save_photo()" />
         </div>
     </form>
     <br />
