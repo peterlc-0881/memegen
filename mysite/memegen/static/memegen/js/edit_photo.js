@@ -4,7 +4,7 @@ window.onload = function () {
 	var src_img = document.getElementById("src-img");
 	var ctx = canvas.getContext("2d");
 	
-	ctx.drawImage(src_img, 0, 0);
+	ctx.drawImage(src_img, 0, 100);
 };
 
 change_photo = function() {
@@ -24,13 +24,16 @@ change_photo = function() {
 	*/
 	var ctx	= canvas.getContext("2d");
 
-	ctx.drawImage(src_img, 0, 0);
+	ctx.drawImage(src_img, 0, 100);
+
+	console.log($("#font_size").val());
+	console.log("Color: " + $("#font_color").val());
 
 	ctx.lineWidth=1;
-	ctx.fillStyle="#000000";
+	ctx.fillStyle=$("#font_color").val();
 	ctx.lineStyle="#ffff00";
-	ctx.font="36px sans-serif";
-	ctx.fillText($("#form_caption").val(), 50, 50);
+	ctx.font=$("#font_size").val() + "px sans-serif";
+	ctx.fillText($("#form_caption").val(), $("#xcoord").val(), $("#ycoord").val());
 
 	//$(canvas).show();
 };
