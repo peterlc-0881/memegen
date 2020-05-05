@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 from .forms import SearchForm
@@ -9,6 +10,7 @@ import urllib.parse
 api_key = u'15b099664d1b449d2b840930dc0797c4'
 api_secret = u'4eb2308d474ccfd6'
 flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
+images = []
 
 # Create your views here.
 def index(request):
@@ -33,38 +35,32 @@ def search_photos(request):
 
             # @TODO: error handling
 
-            context = dict(page=0, images=[])
+            global images
+            images = []
+            for img in ret['photos']['photo']:
+                img_url = 'https://farm' + str(img['farm']) + '.staticflickr.com/' + img['server'] + '/' + img['id'] + '_'
+                img_ext = '.jpg'
+                if 'originalformat' in img:
+                    img_ext = '.' + img['originalformat']
+                    img_url = img_url + img['originalsecret'] + img_ext
+                else:
+                    img_url = img_url + img['secret'] + img_ext
+            
+                # @TODO: look into more secure ways of passing in url?
 
-            for p in range(10):
-                context['images'].append([])
-                for i in range (10):
-                    img = ret['photos']['photo'][p * 10 + i]
+                encoded_url = urllib.parse.quote(img_url, safe='') # must encode to remove / and : => django misinterprets those chars
+                images.append({'url': img_url, 'encoded': encoded_url, 'id': img['id'], 'title': img['title']})
 
-                    img_url = 'https://farm' + str(img['farm']) + '.staticflickr.com/' + img['server'] + '/' + img['id'] + '_'
-                    img_ext = '.jpg'
-                    if 'originalformat' in img:
-                        img_ext = '.' + img['originalformat']
-                        img_url = img_url + img['originalsecret'] + img_ext
-                    else:
-                        img_url = img_url + img['secret'] + img_ext
-                
-                    # @TODO: look into more secure ways of passing in url?
-
-                    encoded_url = urllib.parse.quote(img_url, safe='') # must encode to remove / and : => django misinterprets those chars
-                    context['images'][p].append({'url': img_url, 'encoded': encoded_url, 'id': img['id'], 'title': img['title']})
-
-            return render(request, 'memegen/display-search.html', context) 
         else:
 
             # @TODO: error handling
 
-            return HttpResponse("Something is wrong!")
+            return HttpResponse("Something is WRONG!")
 
-    else:
-
-        # @TODO: error handling
-
-        return HttpResponse("Something is wrong!")
+    paginator = Paginator(images, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'memegen/display-search.html', {'page_obj': page_obj})
 
 def edit_photo(request, photo_url):
     decoded_url = urllib.parse.unquote(photo_url)

@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\mysite",
+    "\\mysite\\memegen",
+    "\\mysite\\memegen\\static\\memegen",
+    "\\mysite\\memegen\\static\\memegen\\js",
+    "\\mysite\\memegen\\templates\\memegen",
+    "\\mysite\\memegen\\templatetags",
+    "\\mysite\\mysite"
+  ],
+  "SelectedNode": "\\mysite\\memegen\\templatetags\\memegen_extras.py",
+  "PreviewInSolutionExplorer": false
+}

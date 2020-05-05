@@ -1,5 +1,3 @@
-//@TODO: Set variables to const
-
 window.onload = function () {
 	console.log("hi!");
 	var canvas = document.getElementById("img-canvas");
@@ -15,8 +13,8 @@ change_photo = function() {
 
 	console.log("hi!");
 
-	var canvas = document.getElementById("img-canvas");
-	var src_img = document.getElementById("src-img");
+	const canvas = document.getElementById("img-canvas");
+	const src_img = document.getElementById("src-img");
 
 	/*
 	$(src_img).hide();
@@ -47,11 +45,13 @@ change_photo = function() {
 
 save_photo = function() {
 	console.log("YES!");
-	var canvas = document.getElementById("img-canvas");
-	var src_img = document.getElementById("src-img");
+	const canvas = document.getElementById("img-canvas");
+	const src_img = document.getElementById("src-img");
 	var ctx = canvas.getContext("2d");
 	
 	var temp_canvas = document.createElement("canvas");
+
+	// @TODO: implement dynamic method of setting width and height
 	temp_canvas.width = src_img.width + 200;
 	temp_canvas.height = src_img.height + 200;
 
