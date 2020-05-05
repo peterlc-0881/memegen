@@ -11,7 +11,8 @@
 
 <body>
     <div><br /></div>
-    {% for image in images %}
+    {% load memegen_extras %}
+    {% for image in images|index:page %}
     <div>
         {% csrf_token %}
         <a href="{% url 'edit-photo' photo_url=image.encoded %}">

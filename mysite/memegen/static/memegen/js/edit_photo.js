@@ -1,3 +1,5 @@
+//@TODO: Set variables to const
+
 window.onload = function () {
 	console.log("hi!");
 	var canvas = document.getElementById("img-canvas");
@@ -62,7 +64,7 @@ save_photo = function() {
 		window.navigator.msSaveBlob(temp_canvas.msToBlob(), "meme.png");
 	}
 	else {
-		a = document.createElement("a");
+		let a = document.createElement("a");
 		document.body.appendChild(a); // must do for firefox, not necessary for chrome
 		a.href = temp_canvas.toDataURL();
 		a.download = "meme.png";
