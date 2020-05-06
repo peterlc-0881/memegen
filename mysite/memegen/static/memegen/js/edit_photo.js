@@ -1,3 +1,32 @@
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+var stage = new Konva.Stage({
+	container: 'container',
+	width: width,
+	height: height
+});
+
+document.getElementById("src-img").onload = function() {
+	var layer = new Konva.Layer();
+	stage.add(layer);
+	
+	var src_img = document.getElementById("src-img");
+	var img = new Konva.Image({
+		x: 50,
+		y: 50,
+		image: src_img,
+		width: src_img.width,
+		height: src_img.height,
+		id: 'srcImg'
+	});
+
+	layer.add(img);
+	layer.batchDraw();
+};
+
+
+/*
 window.onload = function () {
 	console.log("hi!");
 	var canvas = document.getElementById("img-canvas");
@@ -6,9 +35,10 @@ window.onload = function () {
 	
 	ctx.drawImage(src_img, 0, 100);
 };
-
+*/
 change_photo = function() {
 
+	/*
 	//@TODO: validate user input
 
 	console.log("hi!");
@@ -24,7 +54,6 @@ change_photo = function() {
 
 	$(canvas).height($(src_img).height() + 20)
 		.width($(src_img).width() + 20);
-	*/
 	var ctx	= canvas.getContext("2d");
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -41,9 +70,35 @@ change_photo = function() {
 	ctx.fillText($("#form_caption").val(), $("#xcoord").val(), $("#ycoord").val());
 
 	//$(canvas).show();
+	*/
+
+	var myImg = stage.findOne('#srcImg');
+	var textLayer = new Konva.Layer();
+	var addedText = new Konva.Text({
+		x: myImg.width() / 2,
+		y: myImg.height() / 2,
+		text: $("#form_caption").val(),
+		fontSize:$("#font_size").val(),
+		fontFamily: 'Calibri',
+		fill: $("#font_color").val(),
+		draggable: true,
+		id: "addedTxt"
+	});
+	addedText.offsetX(addedText.width() / 2);
+
+	addedText.on('mouseover', function() {
+		document.body.style.cursor = 'pointer';
+	});
+	addedText.on('mouseout', function() {
+		document.body.style.cursor = 'default';
+	});
+
+	textLayer.add(addedText);
+	stage.add(textLayer);
 };
 
 save_photo = function() {
+	/*
 	console.log("YES!");
 	const canvas = document.getElementById("img-canvas");
 	const src_img = document.getElementById("src-img");
@@ -71,4 +126,12 @@ save_photo = function() {
 		a.click();
 		document.body.removeChild(a);
 	}
+	*/
+
+	let a = document.createElement("a");
+	document.body.appendChild(a); // must do for firefox, not necessary for chrome
+	a.href = stage.toDataURL();
+	a.download = "meme.png";
+	a.click();
+	document.body.removeChild(a);
 }

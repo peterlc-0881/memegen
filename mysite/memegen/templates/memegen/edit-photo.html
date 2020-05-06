@@ -5,8 +5,7 @@
 
 <head>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
-    {% load static %}
-    <script src="{% static 'memegen/js/edit_photo.js' %}"></script>
+    <script src="https://unpkg.com/konva@5.0.3/konva.min.js"></script>
 </head>
 
 <html lang='en'>
@@ -23,13 +22,6 @@
         </div>
         <div><br /></div>
         <div>
-            <label for="xcoord">x:</label>
-            <input id="xcoord" type="number" name="x" min="0" max="1000" step="1" value="100" />
-            <label for="ycoord">y:</label>
-            <input id="ycoord" type="number" name="y" min="0" max="1000" step="1" value="100" />
-        </div>
-        <div><br /></div>
-        <div>
             <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()" />
             <input id="download_image" type="submit" value="Download" class="btn btn-primary" onclick="save_photo()" />
         </div>
@@ -38,10 +30,10 @@
     <!--To be referenced by canvas-->
     <img src="{{ img_url }}" crossorigin="anonymous" id="src-img" hidden>
 
-    <canvas id="img-canvas" height="1000" width="1000">
-        <!--Error Message-->
-        <p>Canvas not supported :(</p>
-    </canvas>
+    <!--TODO: Added instructions for user-->
+    <div id="container"></div>
+    {% load static %}
+    <script src="{% static 'memegen/js/edit_photo.js' %}"></script>
 </body>
 
 </html>
