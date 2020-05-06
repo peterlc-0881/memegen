@@ -1,25 +1,32 @@
-var width = window.innerWidth;
-var height = window.innerHeight;
+// @TODO: handle window resizing
+
+var windowW = window.innerWidth;
+var windowH = window.innerHeight;
 
 var stage = new Konva.Stage({
 	container: 'container',
-	width: width,
-	height: height
+	width: windowW,
+	height: windowH
 });
 
-document.getElementById("src-img").onload = function() {
+window.onload = function() {
+	console.log(windowW, windowH);
 	var layer = new Konva.Layer();
-	stage.add(layer);
+	this.stage.add(layer);
 	
+	// @TODO: handle very large images (and probably very small images too)
 	var src_img = document.getElementById("src-img");
 	var img = new Konva.Image({
-		x: 50,
-		y: 50,
+		x: windowW / 2,
+		y: windowH / 2,
 		image: src_img,
 		width: src_img.width,
 		height: src_img.height,
 		id: 'srcImg'
 	});
+
+	img.offsetX(img.width() / 2);
+	img.offsetY(img.height() / 2);
 
 	layer.add(img);
 	layer.batchDraw();
@@ -72,16 +79,43 @@ change_photo = function() {
 	//$(canvas).show();
 	*/
 
+	// reset everything - will change mechanism if wanting to support multiple texts
+	var layerToDestroy = stage.findOne("#txtLayer");
+	if (layerToDestroy) {
+		layerToDestroy.destroy();
+	}
+
 	var myImg = stage.findOne('#srcImg');
-	var textLayer = new Konva.Layer();
+	var textLayer = new Konva.Layer({ id: "txtLayer" });
 	var addedText = new Konva.Text({
-		x: myImg.width() / 2,
-		y: myImg.height() / 2,
+		x: myImg.x(),
+		y: myImg.y(),
 		text: $("#form_caption").val(),
 		fontSize:$("#font_size").val(),
 		fontFamily: 'Calibri',
 		fill: $("#font_color").val(),
 		draggable: true,
+		dragBoundFunc: function(pos) {
+			var newX = pos.x;
+			var newY = pos.y;
+			if (pos.x - 0.5 * this.width() < stage.x()) {
+				newX = stage.x() + 0.5 * this.width();
+			}
+			if (pos.x + 0.5 * this.width() > stage.x() + stage.width()) {
+				newX = stage.x() + stage.width() - 0.5 * this.width();
+			}
+			if (pos.y < stage.y()) {
+				newY = stage.y();
+			}
+			if (pos.y + this.height() > stage.y() + stage.height()) {
+				newY = stage.y() + stage.height() - this.height();
+			}
+
+			return {
+				x: newX,
+				y: newY
+			};
+		},
 		id: "addedTxt"
 	});
 	addedText.offsetX(addedText.width() / 2);
@@ -128,10 +162,35 @@ save_photo = function() {
 	}
 	*/
 
-	let a = document.createElement("a");
+	console.log(stage.x(), stage.y());
+
+	var addedText = stage.findOne("#addedTxt");
+	var srcImage = stage.findOne("#srcImg");
+	var addedTextW = addedText.x() + 0.5 * addedText.width();
+	var addedTextH = addedText.y() + 0.5 * addedText.height();
+	var addedTextX = addedText.x() - 0.5 * addedText.width();
+	var addedTextY = addedText.y() - 0.5 * addedText.height();
+	var srcImageW = srcImage.x() + 0.5 * srcImage.width();
+	var srcImageH = srcImage.y() + 0.5 * srcImage.height();
+	var srcImageX = srcImage.x() - 0.5 * srcImage.width();
+	var srcImageY = srcImage.y() - 0.5 * srcImage.height();
+
+	var newX = (addedTextX < srcImageX) ? addedTextX : srcImageX;
+	var newY = (addedTextY < srcImageY) ? addedTextY : srcImageY;
+	var newWidth = (addedTextW > srcImageW) ? addedTextW : srcImageW;
+	var newHeight = (addedTextH > srcImageH) ? addedTextH : srcImageH;
+
+	console.log("(x,y):", newX, newY, "(w,h):", newWidth, newHeight);
+	var a = document.createElement("a");
 	document.body.appendChild(a); // must do for firefox, not necessary for chrome
-	a.href = stage.toDataURL();
+	a.href = stage.toDataURL({
+		x: newX,
+		y: newY,
+		width: newWidth - newX,
+		height: newHeight - newY
+	});
 	a.download = "meme.png";
 	a.click();
 	document.body.removeChild(a);
+	delete a;
 }
