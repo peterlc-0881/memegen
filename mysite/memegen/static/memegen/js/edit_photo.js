@@ -1,4 +1,5 @@
 // @TODO: handle window resizing
+// @TODO: use consistent variable naming conventions
 
 var windowW = window.innerWidth;
 var windowH = window.innerHeight;
@@ -10,7 +11,6 @@ var stage = new Konva.Stage({
 });
 
 window.onload = function() {
-	console.log(windowW, windowH);
 	var layer = new Konva.Layer();
 	this.stage.add(layer);
 	
@@ -32,52 +32,16 @@ window.onload = function() {
 	layer.batchDraw();
 };
 
-
-/*
-window.onload = function () {
-	console.log("hi!");
-	var canvas = document.getElementById("img-canvas");
-	var src_img = document.getElementById("src-img");
-	var ctx = canvas.getContext("2d");
-	
-	ctx.drawImage(src_img, 0, 100);
-};
-*/
 change_photo = function() {
-
-	/*
-	//@TODO: validate user input
-
-	console.log("hi!");
-
-	const canvas = document.getElementById("img-canvas");
-	const src_img = document.getElementById("src-img");
-
-	/*
-	$(src_img).hide();
-	canvas.hidden = false;
-
-	console.log($(src_img).height() + ", " + $(src_img).width());
-
-	$(canvas).height($(src_img).height() + 20)
-		.width($(src_img).width() + 20);
-	var ctx	= canvas.getContext("2d");
-
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	ctx.drawImage(src_img, 0, 100);
-
-	console.log($("#font_size").val());
-	console.log("Color: " + $("#font_color").val());
-
-	ctx.lineWidth=1;
-	ctx.fillStyle=$("#font_color").val();
-	ctx.lineStyle="#ffff00";
-	ctx.font=$("#font_size").val() + "px sans-serif";
-	ctx.fillText($("#form_caption").val(), $("#xcoord").val(), $("#ycoord").val());
-
-	//$(canvas).show();
-	*/
+	// input validation
+	var fontSizeObj = document.getElementById("font_size");
+	if (!fontSizeObj.checkValidity()) {
+		return;
+	}
+	var captionObj = document.getElementById("form_caption");
+	if (!captionObj.checkValidity()) {
+		return;
+	}
 
 	// reset everything - will change mechanism if wanting to support multiple texts
 	var layerToDestroy = stage.findOne("#txtLayer");
@@ -132,38 +96,6 @@ change_photo = function() {
 };
 
 save_photo = function() {
-	/*
-	console.log("YES!");
-	const canvas = document.getElementById("img-canvas");
-	const src_img = document.getElementById("src-img");
-	var ctx = canvas.getContext("2d");
-	
-	var temp_canvas = document.createElement("canvas");
-
-	// @TODO: implement dynamic method of setting width and height
-	temp_canvas.width = src_img.width + 200;
-	temp_canvas.height = src_img.height + 200;
-
-	var t_ctx = temp_canvas.getContext("2d");
-	t_ctx.drawImage(canvas, 100, 100);
-	
-	// Check for browser compatibility
-	if (window.navigator.msSaveBlob) {
-		// for IE / Edge
-		window.navigator.msSaveBlob(temp_canvas.msToBlob(), "meme.png");
-	}
-	else {
-		let a = document.createElement("a");
-		document.body.appendChild(a); // must do for firefox, not necessary for chrome
-		a.href = temp_canvas.toDataURL();
-		a.download = "meme.png";
-		a.click();
-		document.body.removeChild(a);
-	}
-	*/
-
-	console.log(stage.x(), stage.y());
-
 	var addedText = stage.findOne("#addedTxt");
 	var srcImage = stage.findOne("#srcImg");
 	var addedTextW = addedText.x() + 0.5 * addedText.width();
@@ -180,7 +112,7 @@ save_photo = function() {
 	var newWidth = (addedTextW > srcImageW) ? addedTextW : srcImageW;
 	var newHeight = (addedTextH > srcImageH) ? addedTextH : srcImageH;
 
-	console.log("(x,y):", newX, newY, "(w,h):", newWidth, newHeight);
+	// does not support IE
 	var a = document.createElement("a");
 	document.body.appendChild(a); // must do for firefox, not necessary for chrome
 	a.href = stage.toDataURL({

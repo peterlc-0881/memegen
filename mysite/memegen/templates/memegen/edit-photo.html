@@ -12,17 +12,17 @@
 
 <body>
     <form id="edit-img-form" onsubmit="return false">
-        <input id="form_caption" class="text" name="caption" placeholder="Write something here!" maxlength="140" />
+        <input id="form_caption" class="text" name="caption" placeholder="Write something here!" maxlength="140" required/>
         <div><br /></div>
         <div>
             <label for="font_color">Font Color:</label>
             <input id="font_color" type="color" name="fontcolor" />
             <label for="font_size">Font Size:</label>
-            <input id="font_size" type="number" name="fontsize" min="18" max="128" step="2" value="24" />
+            <input id="font_size" type="number" name="fontsize" min="18" max="128" value="32" />
         </div>
         <div><br /></div>
         <div>
-            <input id="form_submit" type="submit" value="Submit" class="btn btn-primary" onclick="change_photo()" />
+            <input id="form_submit" type="submit" value="Update Image" class="btn btn-primary" onclick="change_photo()" />
             <input id="download_image" type="submit" value="Download" class="btn btn-primary" onclick="save_photo()" />
         </div>
     </form>

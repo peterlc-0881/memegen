@@ -11,6 +11,8 @@ api_key = u'15b099664d1b449d2b840930dc0797c4'
 api_secret = u'4eb2308d474ccfd6'
 flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
 images = []
+PAGE_SIZE = 10
+MAX_ENTRIES = '100'
 
 # Create your views here.
 def index(request):
@@ -29,9 +31,7 @@ def search_photos(request):
         if form.is_valid():
             search_query = form.cleaned_data['search_query']
 
-            # @TODO: handle users wanting to view several pages of photos
-
-            ret = flickr.photos.search(text=search_query, media='photos', sort='relevance', per_page='100', extras='original_format')
+            ret = flickr.photos.search(text=search_query, media='photos', sort='relevance', per_page=MAX_ENTRIES, extras='original_format')
 
             # @TODO: error handling
 
@@ -57,7 +57,7 @@ def search_photos(request):
 
             return HttpResponse("Something is WRONG!")
 
-    paginator = Paginator(images, 10)
+    paginator = Paginator(images, PAGE_SIZE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'memegen/display-search.html', {'page_obj': page_obj})
