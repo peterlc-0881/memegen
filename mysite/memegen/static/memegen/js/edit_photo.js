@@ -15,7 +15,7 @@ window.onload = function() {
 	this.stage.add(layer);
 	
 	// @TODO: handle very large images (and probably very small images too)
-	var src_img = document.getElementById("src-img");
+	var src_img = document.getElementById("srcImg");
 	var img = new Konva.Image({
 		x: windowW / 2,
 		y: windowH / 2,
@@ -34,11 +34,11 @@ window.onload = function() {
 
 change_photo = function() {
 	// input validation
-	var fontSizeObj = document.getElementById("font_size");
+	var fontSizeObj = document.getElementById("fontSize");
 	if (!fontSizeObj.checkValidity()) {
 		return;
 	}
-	var captionObj = document.getElementById("form_caption");
+	var captionObj = document.getElementById("formCaption");
 	if (!captionObj.checkValidity()) {
 		return;
 	}
@@ -54,10 +54,10 @@ change_photo = function() {
 	var addedText = new Konva.Text({
 		x: myImg.x(),
 		y: myImg.y(),
-		text: $("#form_caption").val(),
-		fontSize:$("#font_size").val(),
+		text: $("#formCaption").val(),
+		fontSize:$("#fontSize").val(),
 		fontFamily: 'Calibri',
-		fill: $("#font_color").val(),
+		fill: $("#fontColor").val(),
 		draggable: true,
 		dragBoundFunc: function(pos) {
 			var newX = pos.x;
