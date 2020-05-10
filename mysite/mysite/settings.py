@@ -132,3 +132,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Flickr API key and secret
+API_KEY = u'15b099664d1b449d2b840930dc0797c4'
+API_SECRET = u'4eb2308d474ccfd6'
+

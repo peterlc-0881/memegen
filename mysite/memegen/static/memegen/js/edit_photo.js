@@ -17,7 +17,7 @@ window.onload = function() {
 	// @TODO: handle very large images (and probably very small images too)
 	var src_img = document.getElementById("srcImg");
 	var img = new Konva.Image({
-		x: windowW / 2,
+		x: windowW / 2 - src_img.width / 2,
 		y: windowH / 2,
 		image: src_img,
 		width: src_img.width,
@@ -30,6 +30,8 @@ window.onload = function() {
 
 	layer.add(img);
 	layer.batchDraw();
+
+	document.getElementById("container").style = "border:1px solid #000000;";
 };
 
 change_photo = function() {

@@ -1,5 +1,6 @@
-from django.http import HttpResponse
+from django.conf import settings
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from .forms import SearchForm
@@ -7,9 +8,7 @@ from .forms import SearchForm
 import flickrapi
 import urllib.parse
 
-api_key = u'15b099664d1b449d2b840930dc0797c4'
-api_secret = u'4eb2308d474ccfd6'
-flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
+flickr = flickrapi.FlickrAPI(settings.API_KEY, settings.API_SECRET, format='parsed-json')
 images = []
 PAGE_SIZE = 10
 MAX_ENTRIES = '100'
