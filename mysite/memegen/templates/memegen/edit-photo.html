@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
-
+    
     <title>MemeGen</title>
 
     <!-- jQuery -->
@@ -34,9 +33,9 @@
       <form id="editImgForm" onsubmit="return false">
         <div class="form-group row">
           <label for="formCaption" class="col-sm-3 col-md-2 col-form-label">Text To Add:</label>
-            <div class="col-sm-9 col-md-6">
-              <input id="formCaption" class="form-control" name="caption" placeholder="Write something here!" maxlength="140" required/>
-            </div>
+          <div class="col-sm-9 col-md-6">
+            <input id="formCaption" class="form-control" name="caption" placeholder="Write something here!" maxlength="140" required/>
+          </div>
         </div>
         <div class="form-group row">
           <label for="fontColor" class="col-sm-3 col-md-2 col-form-label">Font Color:</label>
@@ -50,10 +49,11 @@
         </div>
         <button id="formSubmit" type="submit" class="btn btn-primary btn-dark" style="background-color: #1a5276" onclick="change_photo()">Update Image</button>
         <button id="downloadImage" type="button" class="btn btn-secondary" style="background-color: #34495e" onclick="save_photo()">Download Image</button>
+        <text class="col-sm-3" id="helpText"></text>
       </form>
       <br />
       <!--To be referenced by canvas-->
-      <img src="{{ img_url }}" crossorigin="anonymous" id="srcImg" width="5000px" height="1000px" hidden>
+      <img src="{{ img_url }}" crossorigin="anonymous" id="srcImg" hidden>
 
       <!--TODO: Added instructions for user-->
       <div id="stage">

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
 
     <title>MemeGen</title>
 
@@ -31,7 +30,7 @@
         <p class="lead">A meme generator powered by Flickr<br>Search for a picture to get started!</p>
         {% load crispy_forms_tags %}
         <form action="{% url 'search-photos' %}" method="post">
-            <div class="form-group col-sm-12 d-flex justify-content-sm-center">
+            <div title="Please enter a phrase to search" class="form-group col-sm-12 d-flex justify-content-sm-center">
                 {% csrf_token %}
                 {{ form|crispy }}
             </div>

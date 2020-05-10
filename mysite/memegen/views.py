@@ -11,7 +11,7 @@ import urllib.parse
 flickr = flickrapi.FlickrAPI(settings.API_KEY, settings.API_SECRET, format='parsed-json')
 images = []
 PAGE_SIZE = 10
-MAX_ENTRIES = '100'
+MAX_ENTRIES = '100' # can be changed to pull more pictures from flickr, for demo purposes 100 suffices
 
 # Create your views here.
 def index(request):

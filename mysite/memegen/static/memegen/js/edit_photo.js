@@ -5,7 +5,7 @@
 var windowW = window.innerWidth;
 var windowH = window.innerHeight;
 const IMAGE_MARGIN = 200; //leaves room for text to hang off the image
-const MIN_SIZE = 600;
+const MIN_SIZE = 150; // if image is too small, enlarge to MIN_SIZE to make editing easier
 
 // initialize Konva stage -> needs to be global var
 var stage;
@@ -37,23 +37,31 @@ window.onload = function() {
 	var imgScale = 1;
 	// Account for very small images (to make editing easier)
 	if (src_img.width < MIN_SIZE || src_img.height < MIN_SIZE) {
+		console.log("1");
 		let imgScaleX = (MIN_SIZE) / src_img.width;
 		let imgScaleY = (MIN_SIZE) / src_img.height;
 
-		imgScale = (imgScaleX > imgScaleY) ? imgScaleY : imgScaleX;		
+		imgScale = (imgScaleX > imgScaleY) ? imgScaleY : imgScaleX;
+		
+		this.windowW = imgScale * src_img.width + IMAGE_MARGIN;
+		this.windowH = imgScale * src_img.height + IMAGE_MARGIN;
 	}
-
-	// Account for images larger than the window
-	if (src_img.width > window.innerWidth || src_img.height > window.innerHeight) {
+	else if	(src_img.width > window.innerWidth || src_img.height > window.innerHeight) {
+		// Account for images larger than the window
+		console.log("2");
 		let imgScaleX = (windowW - IMAGE_MARGIN) / src_img.width; // accounting for image padding
 		let imgScaleY = (windowH - IMAGE_MARGIN) / src_img.height;
 
 		imgScale = (imgScaleX > imgScaleY) ? imgScaleY : imgScaleX;
+		
+		this.windowW = imgScale * src_img.width + IMAGE_MARGIN;
+		this.windowH = imgScale * src_img.height + IMAGE_MARGIN;
 	}
 	else {
 		this.windowW = src_img.width + IMAGE_MARGIN;
 		this.windowH = src_img.height + IMAGE_MARGIN;			
 	}
+	console.log("scale", imgScale);
 
 	stage = new Konva.Stage({
 		container: 'container',
@@ -61,16 +69,17 @@ window.onload = function() {
 		height: this.windowH,
 	});
 
-	var borderLayer = new Konva.Layer();
+	var borderLayer = new Konva.Layer({ id: "borderLayer" });
 	this.stage.add(borderLayer);
 
 	var border = new Konva.Rect({
 		x: 0,
 		y: 0,
-		width: this.windowW,
-		height: this.windowH,
+		width: this.windowW - 1, // to account for the thickness of the border
+		height: this.windowH - 1,
 		stroke: 'black',
 		strokeWidth: 1,
+		id: 'borderRect'
 	});
 
 	borderLayer.add(border);
@@ -107,6 +116,8 @@ change_photo = function() {
 	if (!captionObj.checkValidity()) {
 		return;
 	}
+
+	document.getElementById("helpText").innerHTML = "Note: Drag the text to where you would like";
 
 	// reset everything - will change mechanism if wanting to support multiple texts
 	var layerToDestroy = stage.findOne("#txtLayer");
@@ -177,11 +188,17 @@ function download_image(newX, newY, newWidth, newHeight) {
 }
 
 save_photo = function() {
+	var borderLayer = stage.findOne("#borderLayer");
+
+	// Remove from stage so that it's not in the downloaded image
+	borderLayer.hide();
+
 	var srcImage = stage.findOne("#srcImg");
-	var srcImageW = srcImage.x() + 0.5 * srcImage.width();
-	var srcImageH = srcImage.y() + 0.5 * srcImage.height();
-	var srcImageX = srcImage.x() - 0.5 * srcImage.width();
-	var srcImageY = srcImage.y() - 0.5 * srcImage.height();
+	var imgScale = srcImage.scaleX();
+	var srcImageW = srcImage.x() + 0.5 * srcImage.width() * imgScale;
+	var srcImageH = srcImage.y() + 0.5 * srcImage.height() * imgScale;
+	var srcImageX = srcImage.x() - 0.5 * srcImage.width() * imgScale;
+	var srcImageY = srcImage.y() - 0.5 * srcImage.height() * imgScale;
 	
 	var addedText = stage.findOne("#addedTxt");
 	// if the user did not add text (still allow to download image)
@@ -201,4 +218,8 @@ save_photo = function() {
 	var newHeight = (addedTextH > srcImageH) ? addedTextH : srcImageH;
 
 	download_image(newX, newY, newWidth, newHeight);
+	//download_image(newX, newY, newWidth * imgScale, newHeight * imgScale);
+
+	// put back border
+	borderLayer.show();
 }
