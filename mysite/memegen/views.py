@@ -20,7 +20,7 @@ def index(request):
 # Call to render search.html
 def search(request):
     form = SearchForm()
-    return render(request, 'memegen/search.html', { 'form': form })
+    return render(request, 'memegen/index.html', { 'form': form })
 
 # Searches for photos using requested query
 def search_photos(request):

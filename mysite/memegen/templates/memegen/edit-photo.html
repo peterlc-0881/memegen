@@ -27,35 +27,6 @@
 
     <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #1a5276">
       <a class="navbar-brand" href="{% url 'search' %}">MemeGen</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
     </nav>
 
     <main role="main" class="container">
@@ -78,14 +49,16 @@
           </div>
         </div>
         <button id="formSubmit" type="submit" class="btn btn-primary btn-dark" style="background-color: #1a5276" onclick="change_photo()">Update Image</button>
-        <button id="downloadImage" type="submit" class="btn btn-secondary" style="background-color: #34495e" onclick="save_photo()">Download Image</button>
+        <button id="downloadImage" type="button" class="btn btn-secondary" style="background-color: #34495e" onclick="save_photo()">Download Image</button>
       </form>
       <br />
       <!--To be referenced by canvas-->
-      <img src="{{ img_url }}" crossorigin="anonymous" id="srcImg" hidden>
+      <img src="{{ img_url }}" crossorigin="anonymous" id="srcImg" width="5000px" height="1000px" hidden>
 
       <!--TODO: Added instructions for user-->
-      <div id="container"></div>
+      <div id="stage">
+        <div id="container"></div>
+      </div>
       {% load static %}
       <script src="{% static 'memegen/js/edit_photo.js' %}"></script>
 
