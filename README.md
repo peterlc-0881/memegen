@@ -20,12 +20,12 @@
 ### Tested on the Following Web Browsers: Google Chrome (v81.0.4044.129 on Windows 10) and Firefox (v75.0 on Windows 10)
 
 ## How to Run
-Currently, the application runs on a local web server provided by Django. To run the webserver, go to ../ai_dev_fellow_task/mysite/ and execute the following command:
+Currently, the application runs on a local web server provided by Django. To run the webserver, go to ../memegen/mysite/ and execute the following command:
 
 > python manage.py runserver
 
 Go to http://127.0.0.1:8000/memegen/ to start the app.
 
 ## Features to be Added
-    - Support for adding multiple text objects
-    - Support for rotation of the text object
+- Support for adding multiple text objects
+- Support for rotation of the text object
