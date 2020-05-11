@@ -27,5 +27,6 @@ Currently, the application runs on a local web server provided by Django. To run
 Go to http://127.0.0.1:8000/memegen/ to start the app.
 
 ## Features to be Added
+- Support for multiple fonts
 - Support for adding multiple text objects
 - Support for rotation of the text object
