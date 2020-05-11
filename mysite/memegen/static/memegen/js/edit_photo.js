@@ -1,73 +1,104 @@
-// @TODO: handle window resizing
-// @TODO: use consistent variable naming conventions
-
 // placeholder values
 var windowW = window.innerWidth;
 var windowH = window.innerHeight;
-const IMAGE_MARGIN = 200; //leaves room for text to hang off the image
-const MIN_SIZE = 150; // if image is too small, enlarge to MIN_SIZE to make editing easier
+
+const IMAGE_MARGIN_SCALE = 1.25; // multiplier to leave room for text to hang off the image
+const MIN_SIZE = 150; // if original image is too small, enlarge to MIN_SIZE to make editing easier
+var windowResizeFactor = 1; // resize factor applies only to image w/o border
 
 // initialize Konva stage -> needs to be global var
 var stage;
+var downloadStage;
 
-/*
-function resizeStage() {
-	var container = document.getElementById("stage");
-	var cWidth = container.offsetWidth;
-
-	var stageWidth = this.stage.width();
-	var stageHeight = this.stage.height();
-	var scale = cWidth / stageWidth;
-	
-	this.stage.width(stageWidth * scale);
-	this.stage.height(stageHeight * scale);
-	this.stage.scale({
-		x: scale,
-		y: scale
+function createKonvaImage(x, y, srcImg, imgScale, id, layer) {
+	var img = new Konva.Image({
+		x: x,
+		y: y,
+		image: srcImg,
+		width: srcImg.width,
+		height: srcImg.height,
+		scaleX: imgScale,
+		scaleY: imgScale,
+		id: id,
 	});
-	this.stage.draw()
+
+	img.offsetX(img.width() / 2);
+	img.offsetY(img.height() / 2);
+
+	layer.add(img);
 }
 
-window.addEventListener('resize', resizeStage);
-*/
+function resize_stage() {
+	const container = document.getElementById("stage");
+	var cWidth = container.clientWidth;
+
+	const srcImg = document.getElementById("srcImg");
+	const origStageWidth = srcImg.width * IMAGE_MARGIN_SCALE;
+	const origStageHeight = srcImg.height * IMAGE_MARGIN_SCALE;
+
+	if (cWidth > origStageWidth) {
+		cWidth = origStageWidth;
+	}
+
+	// calculates scale wrt to original stage size
+	windowResizeFactor = cWidth / origStageWidth;
+	console.log("before", windowResizeFactor);
+	
+	this.stage.width(origStageWidth * windowResizeFactor);
+	this.stage.height(origStageHeight * windowResizeFactor);
+	console.log("stage w,h", origStageWidth * windowResizeFactor, origStageHeight * windowResizeFactor);
+	this.stage.scale({
+		x: windowResizeFactor,
+		y: windowResizeFactor
+	});
+	this.stage.draw();
+}
+
+window.addEventListener('resize', resize_stage);
 
 window.onload = function() {
-	var src_img = document.getElementById("srcImg");
+	const srcImg = document.getElementById("srcImg");
 
 	var imgScale = 1;
 	// Account for very small images (to make editing easier)
-	if (src_img.width < MIN_SIZE || src_img.height < MIN_SIZE) {
+	if (srcImg.width < MIN_SIZE || srcImg.height < MIN_SIZE) {
 		console.log("1");
-		let imgScaleX = (MIN_SIZE) / src_img.width;
-		let imgScaleY = (MIN_SIZE) / src_img.height;
+		let imgScaleX = MIN_SIZE / srcImg.width;
+		let imgScaleY = MIN_SIZE / srcImg.height;
 
 		imgScale = (imgScaleX > imgScaleY) ? imgScaleY : imgScaleX;
 		
-		this.windowW = imgScale * src_img.width + IMAGE_MARGIN;
-		this.windowH = imgScale * src_img.height + IMAGE_MARGIN;
+		this.windowW = imgScale * src_img.width * IMAGE_MARGIN_SCALE;
+		this.windowH = imgScale * src_img.height * IMAGE_MARGIN_SCALE;
 	}
-	else if	(src_img.width > window.innerWidth || src_img.height > window.innerHeight) {
+	else if	(srcImg.width > window.innerWidth || srcImg.height > window.innerHeight) {
 		// Account for images larger than the window
-		console.log("2");
-		let imgScaleX = (windowW - IMAGE_MARGIN) / src_img.width; // accounting for image padding
-		let imgScaleY = (windowH - IMAGE_MARGIN) / src_img.height;
+		let imgScaleX = windowW / srcImg.width; // accounting for image padding
+		let imgScaleY = windowH / srcImg.height;
 
 		imgScale = (imgScaleX > imgScaleY) ? imgScaleY : imgScaleX;
 		
-		this.windowW = imgScale * src_img.width + IMAGE_MARGIN;
-		this.windowH = imgScale * src_img.height + IMAGE_MARGIN;
+		this.windowW = imgScale * srcImg.width;
+		this.windowH = imgScale * srcImg.height;
 	}
 	else {
-		this.windowW = src_img.width + IMAGE_MARGIN;
-		this.windowH = src_img.height + IMAGE_MARGIN;			
+		this.windowW = srcImg.width * IMAGE_MARGIN_SCALE;
+		this.windowH = srcImg.height * IMAGE_MARGIN_SCALE;			
 	}
-	console.log("scale", imgScale);
-
+	
 	stage = new Konva.Stage({
 		container: 'container',
 		width: this.windowW,
 		height: this.windowH,
 	});
+
+	downloadStage = new Konva.Stage({
+		container: 'containerDownload',
+		width: this.windowW,
+		height: this.windowH,
+	});
+	var downloadImgLayer = new Konva.Layer({ id: "downloadLayer"});
+	this.downloadStage.add(downloadImgLayer);
 
 	var borderLayer = new Konva.Layer({ id: "borderLayer" });
 	this.stage.add(borderLayer);
@@ -88,21 +119,10 @@ window.onload = function() {
 	var layer = new Konva.Layer();
 	this.stage.add(layer);
 	
-	var img = new Konva.Image({
-		x: this.windowW / 2,
-		y: this.windowH / 2,
-		image: src_img,
-		width: src_img.width,
-		height: src_img.height,
-		scaleX: imgScale,
-		scaleY: imgScale,
-		id: 'srcImg',
-	});
+	this.createKonvaImage(0.5 * this.windowW, 0.5 * this.windowH, srcImg, imgScale, "konvaSrcImg", layer);
+	this.createKonvaImage(0.5 * this.windowW, 0.5 * this.windowH, srcImg, imgScale, "konvaDownloadImage", downloadImgLayer);
+	windowResizeFactor = imgScale;
 
-	img.offsetX(img.width() / 2);
-	img.offsetY(img.height() / 2);
-
-	layer.add(img);
 	layer.batchDraw();
 };
 
@@ -120,16 +140,23 @@ change_photo = function() {
 	document.getElementById("helpText").innerHTML = "Note: Drag the text to where you would like";
 
 	// reset everything - will change mechanism if wanting to support multiple texts
-	var layerToDestroy = stage.findOne("#txtLayer");
-	if (layerToDestroy) {
-		layerToDestroy.destroy();
+	var txtToDestroy = stage.findOne("#addedTxt");
+	var oldX = -1;
+	var oldY = -1;
+	if (txtToDestroy) {
+		oldX = txtToDestroy.x();
+		oldY = txtToDestroy.y();
+		txtToDestroy.destroy();
+	} else {
+		let newTxtLayer = new Konva.Layer({ id: "txtLayer" });
+		stage.add(newTxtLayer);
 	}
 
-	var myImg = stage.findOne('#srcImg');
-	var textLayer = new Konva.Layer({ id: "txtLayer" });
+	var myImg = stage.findOne('#konvaSrcImg');
+	var textLayer = stage.findOne("#txtLayer");
 	var addedText = new Konva.Text({
-		x: myImg.x(),
-		y: myImg.y(),
+		x: (oldX == -1) ? myImg.x() : oldX,
+		y: (oldY == -1) ? myImg.y() : oldY,
 		text: $("#formCaption").val(),
 		fontSize:$("#fontSize").val(),
 		fontFamily: 'Calibri',
@@ -159,7 +186,7 @@ change_photo = function() {
 		id: "addedTxt",
 	});
 	addedText.offsetX(addedText.width() / 2);
-
+	
 	addedText.on('mouseover', function() {
 		document.body.style.cursor = 'pointer';
 	});
@@ -168,18 +195,18 @@ change_photo = function() {
 	});
 
 	textLayer.add(addedText);
-	stage.add(textLayer);
+	textLayer.batchDraw();
 };
 
-function download_image(newX, newY, newWidth, newHeight) {
+function download_image(newLeft, newRight, newTop, newBottom) {
 	// does not support IE
 	var a = document.createElement("a");
 	document.body.appendChild(a); // must do for firefox, not necessary for chrome
-	a.href = stage.toDataURL({
-		x: newX,
-		y: newY,
-		width: newWidth - newX,
-		height: newHeight - newY
+	a.href = downloadStage.toDataURL({
+		x: newLeft,
+		y: newTop,
+		width: newRight - newLeft,
+		height: newBottom - newTop
 	});
 	a.download = "meme.png";
 	a.click();
@@ -188,38 +215,49 @@ function download_image(newX, newY, newWidth, newHeight) {
 }
 
 save_photo = function() {
-	var borderLayer = stage.findOne("#borderLayer");
+	var downloadKonvaImage = downloadStage.findOne("#konvaDownloadImage");
 
-	// Remove from stage so that it's not in the downloaded image
-	borderLayer.hide();
+	var downloadKonvaImageLeft = downloadKonvaImage.x() - 0.5 * downloadKonvaImage.width();
+	var downloadKonvaImageRight = downloadKonvaImage.x() + 0.5 * downloadKonvaImage.width();
+	var downloadKonvaImageTop = downloadKonvaImage.y() - 0.5 * downloadKonvaImage.height();
+	var downloadKonvaImageBottom = downloadKonvaImage.y() + 0.5 * downloadKonvaImage.height();
 
-	var srcImage = stage.findOne("#srcImg");
-	var imgScale = srcImage.scaleX();
-	var srcImageW = srcImage.x() + 0.5 * srcImage.width() * imgScale;
-	var srcImageH = srcImage.y() + 0.5 * srcImage.height() * imgScale;
-	var srcImageX = srcImage.x() - 0.5 * srcImage.width() * imgScale;
-	var srcImageY = srcImage.y() - 0.5 * srcImage.height() * imgScale;
-	
-	var addedText = stage.findOne("#addedTxt");
-	// if the user did not add text (still allow to download image)
-	if (!addedText) {
-		download_image(srcImageX, srcImageY, srcImageW, srcImageH);
+	var oldDownloadTxtLayer = downloadStage.findOne("#downloadTxtLayer");
+	if (oldDownloadTxtLayer) {
+		oldDownloadTxtLayer.destroy();
+	}
+	var txtToCpy = stage.findOne("#addedTxt");
+	if (!txtToCpy) {
+		download_image(downloadKonvaImageLeft, downloadKonvaImageRight, downloadKonvaImageTop, downloadKonvaImageBottom);
 		return;
 	}
+	var newDownloadTxtLayer = new Konva.Layer({ id: "downloadTxtLayer" });
+	downloadStage.add(newDownloadTxtLayer);
+	console.log("factor:", windowResizeFactor);
+	console.log("x,y", txtToCpy.x(), txtToCpy.y());
+	console.log("x.,y.", txtToCpy.x() / windowResizeFactor, txtToCpy.y() / windowResizeFactor);
+	var addedText = new Konva.Text({
+		x: txtToCpy.x(),
+		y: txtToCpy.y(),
+		text: $("#formCaption").val(),
+		fontSize:$("#fontSize").val(),
+		fontFamily: 'Calibri',
+		fill: $("#fontColor").val(),
+		id: "downloadAddedTxt",
+	});
+	addedText.offsetX(addedText.width() / 2);
+	newDownloadTxtLayer.add(addedText);
+	newDownloadTxtLayer.batchDraw();
 
-	var addedTextW = addedText.x() + 0.5 * addedText.width();
-	var addedTextH = addedText.y() + 0.5 * addedText.height();
-	var addedTextX = addedText.x() - 0.5 * addedText.width();
-	var addedTextY = addedText.y() - 0.5 * addedText.height();
+	var addedTextLeft = addedText.x() - 0.5 * addedText.width();
+	var addedTextRight = addedText.x() + 0.5 * addedText.width();
+	var addedTextTop = addedText.y();
+	var addedTextBottom = addedText.y() + addedText.height();
 
-	var newX = (addedTextX < srcImageX) ? addedTextX : srcImageX;
-	var newY = (addedTextY < srcImageY) ? addedTextY : srcImageY;
-	var newWidth = (addedTextW > srcImageW) ? addedTextW : srcImageW;
-	var newHeight = (addedTextH > srcImageH) ? addedTextH : srcImageH;
+	var newLeft = (addedTextLeft < downloadKonvaImageLeft) ? addedTextLeft : downloadKonvaImageLeft;
+	var newRight = (addedTextRight > downloadKonvaImageRight) ? addedTextRight : downloadKonvaImageRight;
+	var newTop = (addedTextTop < downloadKonvaImageTop) ? addedTextTop : downloadKonvaImageTop;
+	var newBottom = (addedTextBottom > downloadKonvaImageBottom) ? addedTextBottom : downloadKonvaImageBottom;
 
-	download_image(newX, newY, newWidth, newHeight);
-	//download_image(newX, newY, newWidth * imgScale, newHeight * imgScale);
-
-	// put back border
-	borderLayer.show();
+	download_image(newLeft, newRight, newTop, newBottom);
 }

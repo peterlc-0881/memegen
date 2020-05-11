@@ -55,10 +55,11 @@
       <!--To be referenced by canvas-->
       <img src="{{ img_url }}" crossorigin="anonymous" id="srcImg" hidden>
 
-      <!--TODO: Added instructions for user-->
       <div id="stage">
         <div id="container"></div>
       </div>
+      <!--Hidden from user -> used to download image-->
+      <div id="containerDownload" hidden></div>
       {% load static %}
       <script src="{% static 'memegen/js/edit_photo.js' %}"></script>
 

@@ -13,10 +13,6 @@ images = []
 PAGE_SIZE = 10
 MAX_ENTRIES = '100' # can be changed to pull more pictures from flickr, for demo purposes 100 suffices
 
-# Create your views here.
-def index(request):
-	return render(request, 'memegen/index.html', {})
-
 # Call to render search.html
 def search(request):
     form = SearchForm()
